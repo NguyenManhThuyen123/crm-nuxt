@@ -30,7 +30,7 @@ export class TenantAwareService {
    * Throws error if seller tries to access data outside their tenant
    */
   protected validateTenantAccess(tenantId?: string | null): void {
-    if (this.context.role === UserRole.SELLER) {
+    if (this.context.role === 'SELLER') {
       if (!this.context.tenantId) {
         throw new Error("Seller must be assigned to a tenant");
       }
@@ -46,7 +46,7 @@ export class TenantAwareService {
    * For admins: use provided tenant or null for cross-tenant access
    */
   protected getEffectiveTenantId(requestedTenantId?: string | null): string | null {
-    if (this.context.role === UserRole.SELLER) {
+    if (this.context.role === 'SELLER') {
       return this.context.tenantId || null;
     }
     return requestedTenantId || null;
@@ -356,7 +356,7 @@ export class TenantInvoiceService extends TenantAwareService {
     };
 
     // For sellers, only show their own invoices unless admin specifies userId
-    if (this.context.role === UserRole.SELLER) {
+    if (this.context.role === 'SELLER') {
       where.userId = this.context.userId;
     } else if (options.userId) {
       where.userId = options.userId;
@@ -411,7 +411,7 @@ export class TenantInvoiceService extends TenantAwareService {
     };
 
     // For sellers, only count their own invoices unless admin specifies userId
-    if (this.context.role === UserRole.SELLER) {
+    if (this.context.role === 'SELLER') {
       where.userId = this.context.userId;
     } else if (options.userId) {
       where.userId = options.userId;
@@ -438,7 +438,7 @@ export class TenantInvoiceService extends TenantAwareService {
     };
 
     // For sellers, only allow access to their own invoices
-    if (this.context.role === UserRole.SELLER) {
+    if (this.context.role === 'SELLER') {
       where.userId = this.context.userId;
     }
 
@@ -579,7 +579,7 @@ export class TenantInvoiceService extends TenantAwareService {
 export class TenantManagementService extends TenantAwareService {
   constructor(context: TenantContext) {
     super(context);
-    if (context.role !== UserRole.ADMIN) {
+    if (context.role !== 'ADMIN') {
       throw new Error("Tenant management requires admin privileges");
     }
   }
@@ -692,7 +692,7 @@ export function createTenantServices(context: TenantContext) {
     products: new TenantProductService(context),
     variants: new TenantVariantService(context),
     invoices: new TenantInvoiceService(context),
-    tenants: context.role === UserRole.ADMIN ? new TenantManagementService(context) : null,
+    tenants: context.role === 'ADMIN' ? new TenantManagementService(context) : null,
   };
 }
 
