@@ -14,8 +14,7 @@
       </div>
     </div>
 
-    <div>
-    <!-- Loading tenants -->
+    <!-v>enants -->
     <div v-if="loadingTenants" class="flex justify-center py-8">
       <div class="text-center">
         <Icon name="heroicons:arrow-path" class="h-6 w-6 animate-spin mx-auto mb-2" />
