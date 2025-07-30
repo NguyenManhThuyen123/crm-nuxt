@@ -6,8 +6,13 @@ export default defineEventHandler(async (e) => {
   try {
     // validate email and password
     await AuthSchema.validate({ email, password });
-    // check if account already exist
-    const user = await prisma.user.findUnique({ where: { email } });
+    // check if account already exist and include tenant information
+    const user = await prisma.user.findUnique({ 
+      where: { email },
+      include: {
+        tenant: true
+      }
+    });
     if (!user) {
       throw createError({
         statusCode: 401,
@@ -30,8 +35,9 @@ export default defineEventHandler(async (e) => {
       maxAge: Number(process.env.JWT_EXP_SEC),
       sameSite: "strict",
     });
-    // send response
-    return user;
+    // send response with role-based information
+    const { password: userPassword, ...userWithoutPassword } = user;
+    return userWithoutPassword;
   } catch (error: any) {
     throw createError({
       statusCode: 400,

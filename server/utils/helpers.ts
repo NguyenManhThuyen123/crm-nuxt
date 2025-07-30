@@ -39,7 +39,11 @@ export const compareString = (val: string, hash: string) => {
 export const createToken = (user: Partial<User>): Promise<string | undefined> => {
   return new Promise((resolve, reject) => {
     jwt.sign(
-      { id: user.id },
+      {
+        id: user.id,
+        role: user.role,
+        tenantId: user.tenantId,
+      },
       process.env.JWT_SECRET as string,
       { expiresIn: process.env.JWT_EXP_DYS, audience: user.id?.toString() },
       (err, token) => {

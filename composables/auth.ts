@@ -1,7 +1,9 @@
-import type { User } from "@prisma/client";
+import type { User, Tenant } from "@prisma/client";
 import type { TAuth } from "~/types";
 
-export const useUser = () => useState<User | undefined>("CRM_USER");
+type UserWithTenant = User & { tenant?: Tenant | null };
+
+export const useUser = () => useState<UserWithTenant | undefined>("CRM_USER");
 export const useAuth = () => {
   const user = useUser();
 
@@ -9,7 +11,7 @@ export const useAuth = () => {
   /**
    * Method to register a new user
    * @param data {TAuth} - The user data to register
-   * @returns {Promise<User>} - The response from the API
+   * @returns {Promise<UserWithTenant>} - The response from the API
    * @example
    * const { register } = useAuth()
    * const data = {
@@ -22,7 +24,7 @@ export const useAuth = () => {
    */
   const register = async (data: TAuth) => {
     try {
-      const res = await $fetch<User | undefined>("/api/auth/register", {
+      const res = await $fetch<UserWithTenant | undefined>("/api/auth/register", {
         method: "POST",
         body: data,
       });
@@ -35,7 +37,7 @@ export const useAuth = () => {
   /**
    * Method to login a user
    * @param data {TAuth} - The user data to login
-   * @returns {Promise<User>} - The response from the API
+   * @returns {Promise<UserWithTenant>} - The response from the API
    * @example
    * const { login } = useAuth()
    * const data = {
@@ -46,7 +48,7 @@ export const useAuth = () => {
    */
   const login = async (data: TAuth) => {
     try {
-      const res = await $fetch<User | undefined>("/api/auth/login", {
+      const res = await $fetch<UserWithTenant | undefined>("/api/auth/login", {
         method: "POST",
         body: data,
       });
@@ -77,7 +79,7 @@ export const useAuth = () => {
 
   /**
    * Method to get the current user
-   * @returns {Promise<User | undefined>} - The response from the API
+   * @returns {Promise<UserWithTenant | undefined>} - The response from the API
    * @example
    * const { getMe } = useAuth()
    * const response = await getMe()
@@ -85,7 +87,7 @@ export const useAuth = () => {
    */
   const getMe = async () => {
     try {
-      const res = await $fetch<User | undefined>("/api/auth/me", {
+      const res = await $fetch<UserWithTenant | undefined>("/api/auth/me", {
         headers: useRequestHeaders(),
         credentials: "include",
       });
@@ -96,5 +98,51 @@ export const useAuth = () => {
     }
   };
 
-  return { register, login, getMe, logoutUser };
+  /**
+   * Method to check if user has admin role
+   * @returns {boolean} - True if user is admin
+   */
+  const isAdmin = () => {
+    return user.value?.role === 'ADMIN';
+  };
+
+  /**
+   * Method to check if user has seller role
+   * @returns {boolean} - True if user is seller
+   */
+  const isSeller = () => {
+    return user.value?.role === 'SELLER';
+  };
+
+  /**
+   * Method to get user's tenant ID
+   * @returns {string | null} - User's tenant ID or null
+   */
+  const getTenantId = () => {
+    return user.value?.tenantId || null;
+  };
+
+  /**
+   * Method to get role-based redirect path after login
+   * @returns {string} - Redirect path based on user role
+   */
+  const getRoleBasedRedirect = () => {
+    if (isAdmin()) {
+      return '/admin';
+    } else if (isSeller()) {
+      return '/seller';
+    }
+    return '/admin/contacts'; // fallback to existing behavior
+  };
+
+  return { 
+    register, 
+    login, 
+    getMe, 
+    logoutUser, 
+    isAdmin, 
+    isSeller, 
+    getTenantId, 
+    getRoleBasedRedirect 
+  };
 };

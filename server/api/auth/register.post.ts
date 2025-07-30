@@ -16,12 +16,16 @@ export default defineEventHandler(async (e) => {
     }
     // hash password
     const hashedPassword = await hashString(password);
-    // create user
+    // create user with default SELLER role
     const user = await prisma.user.create({
       data: {
         email,
         password: hashedPassword,
+        role: 'SELLER', // default role
       },
+      include: {
+        tenant: true
+      }
     });
     // create jwt token
     const token = await createToken(user);
@@ -31,8 +35,9 @@ export default defineEventHandler(async (e) => {
       maxAge: Number(process.env.JWT_EXP_SEC),
       sameSite: "strict",
     });
-    // send response
-    return user;
+    // send response without password
+    const { password: _, ...userWithoutPassword } = user;
+    return userWithoutPassword;
   } catch (error: any) {
     throw createError({
       statusCode: 400,

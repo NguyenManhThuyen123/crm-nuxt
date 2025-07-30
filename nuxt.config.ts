@@ -15,6 +15,39 @@ export default defineNuxtConfig({
     "~/assets/css/main.css",
   ],
 
+  // Fix Prisma client build issues
+  nitro: {
+    experimental: {
+      wasm: true
+    },
+    esbuild: {
+      options: {
+        target: 'esnext'
+      }
+    },
+    rollupConfig: {
+      external: ['@prisma/client']
+    }
+  },
+
+  vite: {
+    define: {
+      global: 'globalThis',
+    },
+    optimizeDeps: {
+      exclude: ['@prisma/client']
+    },
+    build: {
+      rollupOptions: {
+        external: ['@prisma/client']
+      }
+    }
+  },
+
+  build: {
+    transpile: ['@prisma/client', '@teckel/vue-barcode-reader']
+  },
+
   modules: [
     "@nuxtjs/device",
     "nuxt-icon",
@@ -24,10 +57,28 @@ export default defineNuxtConfig({
     "@vueuse/nuxt",
     "@davestewart/nuxt-scrollbar",
     "@vee-validate/nuxt",
+    "shadcn-nuxt",
+    "@nuxtjs/color-mode",
   ],
 
   headlessui: {
     prefix: "H",
+  },
+
+  shadcn: {
+    /**
+     * Prefix for all the imported component
+     */
+    prefix: '',
+    /**
+     * Directory that the component lives in.
+     * @default "./components/ui"
+     */
+    componentDir: './components/ui'
+  },
+
+  colorMode: {
+    classSuffix: ''
   },
 
   app: {
