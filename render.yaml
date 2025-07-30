@@ -9,9 +9,7 @@ services:
       - key: NODE_ENV
         value: production
       - key: DATABASE_URL
-        fromDatabase:
-          name: crm-postgres
-          property: connectionString
+        value: postgresql://neondb_owner:npg_8QhglCBN2ceS@ep-wild-mountain-a1f89brp-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
       - key: JWT_SECRET
         generateValue: true
       - key: JWT_EXP_SEC
@@ -21,10 +19,3 @@ services:
       - key: COOKIE_NAME
         value: "crm-auth-token"
     healthCheckPath: /
-    
-  - type: pserv
-    name: crm-postgres
-    env: postgresql
-    plan: free
-    databaseName: crm_nuxt
-    databaseUser: crm_user
