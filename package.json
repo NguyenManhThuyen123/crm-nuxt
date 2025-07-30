@@ -41,7 +41,7 @@
     "@vitejs/plugin-vue": "^6.0.1",
     "@vitest/ui": "^3.2.4",
     "@vue/test-utils": "^2.4.6",
-    "@vueuse/core": "^10.11.1",
+    "@vueuse/core": "^13.6.0",
     "@vueuse/nuxt": "^10.11.1",
     "autoprefixer": "^10.4.21",
     "jsdom": "^26.1.0",
