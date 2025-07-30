@@ -12,6 +12,10 @@ echo "Database URL configured"
 echo "Running Prisma migrations..."
 npx prisma migrate deploy
 
+# Run Prisma seed to create initial data
+echo "Running Prisma seed..."
+npx prisma db seed
+
 # Start the application
 echo "Starting application..."
 exec node .output/server/index.mjs

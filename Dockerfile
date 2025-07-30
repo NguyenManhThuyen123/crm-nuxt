@@ -59,9 +59,7 @@ COPY --from=builder --chown=nuxtjs:nodejs /app/prisma /app/prisma
 COPY --from=builder --chown=nuxtjs:nodejs /app/package.json /app/package.json
 
 # Copy entire node_modules for Prisma to work properly
-COPY --from=builder --chown=nuxtjs:nodejs /app/node_modules/.prisma /app/node_modules/.prisma
-COPY --from=builder --chown=nuxtjs:nodejs /app/node_modules/@prisma /app/node_modules/@prisma
-COPY --from=builder --chown=nuxtjs:nodejs /app/node_modules/prisma /app/node_modules/prisma
+COPY --from=builder --chown=nuxtjs:nodejs /app/node_modules /app/node_modules
 
 # Copy entrypoint script
 COPY --chown=nuxtjs:nodejs scripts/docker-entrypoint.sh /app/docker-entrypoint.sh
