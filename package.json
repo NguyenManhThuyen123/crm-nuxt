@@ -74,7 +74,7 @@
     "clsx": "^2.1.1",
     "dayjs": "^1.11.13",
     "exceljs": "^4.4.0",
-    "floating-vue": "^2.0.0",
+    "floating-vue": "^5.2.2",
     "fuse.js": "^7.1.0",
     "jsonwebtoken": "^9.0.2",
     "lucide-vue-next": "^0.532.0",
